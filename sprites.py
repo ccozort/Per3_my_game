@@ -46,8 +46,8 @@ class Mob(Sprite):
         self.image = pg.Surface((32, 32))
         self.rect = self.image.get_rect()
         self.image.fill(GREEN)
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
         self.speed = 10
         self.category = random.choice([0,1])
     def update(self):
@@ -77,8 +77,8 @@ class Wall(Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.image.fill(BLUE)
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 
     def update(self):
         pass

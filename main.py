@@ -4,6 +4,8 @@
 import pygame as pg
 from settings import *
 from sprites import *
+from tilemap import *
+from os import path
 from random import randint
 
 
@@ -21,16 +23,31 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
     # create player block, creates the all_sprites group so that we can batch update and render, defines properties that can be seen in the game system
-    # 
+    #
+    def load_data(self):
+        self.game_folder = path.dirname(__file__)
+        self.map = Map(path.join(self.game_folder, 'level1.txt'))
     def new(self):
+        self.load_data()
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 1, 1)
+        # self.player = Player(self, 1, 1)
         # instantiated a mob
-        self.mob = Mob(self, 100,100)
+        # self.mob = Mob(self, 100,100)
         # makes new mobs and walls using a for loop
-        for i in range(randint(10,20)):
-            m = Mob(self, i*randint(0, 200), i*randint(0, 200))
-            Wall(self, i*TILESIZE, i*TILESIZE)
+        # for i in range(randint(10,20)):
+        #     m = Mob(self, i*randint(0, 200), i*randint(0, 200))
+        #     Wall(self, i*TILESIZE, i*TILESIZE)
+        
+        for row, tiles in enumerate(self.map.data):
+            print(row)
+            for col, tile in enumerate(tiles):
+                print(col)
+                if tile == '1':
+                    Wall(self, col, row)
+                if tile == 'P':
+                    self.player = Player(self, col, row)
+                if tile == 'M':
+                    Mob(self, col, row)
     # using self.running as a boolean to continue running the game
     def run(self):
         while self.running:
@@ -50,7 +67,6 @@ class Game:
     def update(self):
         self.all_sprites.update()
         # output
-        print(self.player.rect.colliderect(self.mob))
         pass
     # 
     def draw(self):
