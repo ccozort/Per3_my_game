@@ -29,7 +29,11 @@ class Game:
         self.map = Map(path.join(self.game_folder, 'level1.txt'))
     def new(self):
         self.load_data()
+        print(self.map.data)
         self.all_sprites = pg.sprite.Group()
+        self.all_walls = pg.sprite.Group()
+        self.all_mobs = pg.sprite.Group()
+        self.all_powerups = pg.sprite.Group()
         # self.player = Player(self, 1, 1)
         # instantiated a mob
         # self.mob = Mob(self, 100,100)
@@ -38,6 +42,9 @@ class Game:
         #     m = Mob(self, i*randint(0, 200), i*randint(0, 200))
         #     Wall(self, i*TILESIZE, i*TILESIZE)
         
+
+        # takes map.data and parses it using enumerate so that we can assign x and y values to 
+        # object instances.
         for row, tiles in enumerate(self.map.data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -48,6 +55,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'U':
+                    Powerup(self, col, row)
     # using self.running as a boolean to continue running the game
     def run(self):
         while self.running:
@@ -69,9 +78,18 @@ class Game:
         # output
         pass
     # 
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x,y)
+        surface.blit(text_surface, text_rect)
     def draw(self):
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
+        self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
+        self.draw_text(self.screen, "This game is awesome...", 24, BLACK, WIDTH/2, HEIGHT/24)
         pg.display.flip()
 
 # checks file name and creates a game object
