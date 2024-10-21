@@ -2,11 +2,24 @@
 
 # IMPORT ALL NECESSARY MODULES AND LIBRARIES
 import pygame as pg
-from settings import *
+# from settings import *
+from sprites_sidescroller import *
 from sprites import *
 from tilemap import *
 from os import path
 from random import randint
+'''
+GOALS: Eat all the enemies
+RULES: You have to get a powerup to eat enemies
+FEEDBACK: If you collide with an enemy before eating a powerup you die
+FREEDOM: Move around inside the game space
+
+What sentence does your game make? 
+
+When the player collides with an enemy the enemy bounces off
+
+'''
+
 
 
 # created a game class to instantiate later
