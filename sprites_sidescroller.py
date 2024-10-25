@@ -12,9 +12,11 @@ class Player(Sprite):
         self.game = game
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((32, 32))
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.player_img
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        self.image.fill(RED)
+        # self.image.fill(RED)
         # self.rect.x = x
         # self.rect.y = y
         # self.x = x * TILESIZE
@@ -24,7 +26,7 @@ class Player(Sprite):
         self.acc = vec(0,0)
         self.speed = 5
         self.jumping = False
-        self.jump_power = 25
+        self.jump_power = 15
         # self.vx, self.vy = 0, 0
         self.coins = 0
     def get_keys(self):
@@ -40,14 +42,13 @@ class Player(Sprite):
         if keys[pg.K_SPACE]:
             self.jump()
     def jump(self):
-        print("I'm trying to jump...")
-        print(self.vel.y)
         self.rect.y += 2
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
         self.rect.y -= 2
         if hits and not self.jumping:
             self.jumping = True
             self.vel.y = -self.jump_power
+            print("trying to jump")
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -64,11 +65,13 @@ class Player(Sprite):
             if hits:
                 if self.vel.y > 0:
                     self.pos.y = hits[0].rect.top - TILESIZE
+                    self.jumping = False
                     # self.y = hits[0].rect.top - self.rect.height
                 if self.vel.y < 0:
                     self.pos.y = hits[0].rect.bottom
                 self.vel.y = 0
                 self.rect.y = self.pos.y
+                
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
@@ -92,9 +95,6 @@ class Player(Sprite):
         # self.x += self.vx * self.game.dt
         # self.y += self.vy * self.game.dt
         # reverse order to fix collision issues
-        
-        self.collide_with_stuff(self.game.all_powerups, True)
-        self.collide_with_stuff(self.game.all_coins, True)
 
         self.rect.x = self.pos.x
         self.collide_with_walls('x')
@@ -102,13 +102,15 @@ class Player(Sprite):
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
 
+        self.collide_with_stuff(self.game.all_powerups, True)
+        self.collide_with_stuff(self.game.all_coins, True)
 
 class Mob(Sprite):
     def __init__(self, game, x, y):
         self.game = game
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.image.fill(GREEN)
         self.rect.x = x * TILESIZE

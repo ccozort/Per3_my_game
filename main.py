@@ -2,9 +2,9 @@
 
 # IMPORT ALL NECESSARY MODULES AND LIBRARIES
 import pygame as pg
-# from settings import *
+from settings import *
 from sprites_sidescroller import *
-from sprites import *
+# from sprites import *
 from tilemap import *
 from os import path
 from random import randint
@@ -39,7 +39,9 @@ class Game:
     #
     def load_data(self):
         self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'images' )
         self.map = Map(path.join(self.game_folder, 'level1.txt'))
+        self.player_img = pg.image.load(path.join(self.img_folder, "bell.png"))
     def new(self):
         self.load_data()
         print(self.map.data)
