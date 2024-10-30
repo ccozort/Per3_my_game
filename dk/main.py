@@ -20,9 +20,6 @@ What sentence does your game make?
 When the player collides with an enemy the enemy bounces off
 
 '''
-
-
-
 # created a game class to instantiate later
 # it will have all the necessary parts to run the game
 # the game class is created to organize the elements needed to create a gam
@@ -42,32 +39,16 @@ class Game:
     def load_data(self):
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images' )
-        self.map = Map(path.join(self.game_folder, 'level1_sidescrolling.txt'))
-        self.player_img = pg.image.load(path.join(self.img_folder, "bell.png"))
-        self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
-        self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
+        self.map = Map(path.join(self.game_folder, 'level1.txt'))
+
     def new(self):
         self.load_data()
         print(self.map.data)
         self.all_sprites = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
-        self.all_pillars = pg.sprite.Group()
         self.all_mobs = pg.sprite.Group()
-        self.all_powerups = pg.sprite.Group()
-        self.all_coins = pg.sprite.Group()
-        self.all_ladders = pg.sprite.Group()
-        # self.player = Player(self, 1, 1)
-        # instantiated a mob
-        # self.mob = Mob(self, 100,100)
-        # makes new mobs and walls using a for loop
-        # for i in range(randint(10,20)):
-        #     m = Mob(self, i*randint(0, 200), i*randint(0, 200))
-        #     Wall(self, i*TILESIZE, i*TILESIZE)
-        
 
-        # takes map.data and parses it using enumerate so that we can assign x and y values to 
-        # object instances.
-        p = Pillar(self, 1, 5, 1, 4)
+
         for row, tiles in enumerate(self.map.data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -76,12 +57,6 @@ class Game:
                     Wall(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
-                if tile == 'U':
-                    Powerup(self, col, row)
-                if tile == 'C':
-                    Coin(self, col, row)
-                if tile == 'L':
-                    Ladder(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
     
@@ -103,8 +78,6 @@ class Game:
                 if event.type == pg.QUIT:
                     self.running = False
 
-        # pg.quit()
-        # process
     def pillargenerator(self):
         Pillar(self, 1, 1)
     def update(self):
@@ -123,13 +96,7 @@ class Game:
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
         self.draw_text(self.screen, str(pg.time.get_ticks()), 24, WHITE, WIDTH/30, HEIGHT/30)
-        self.draw_text(self.screen, "Coins collected: " + str(self.player.coins), 24, BLACK, WIDTH/2, HEIGHT/24)
         pg.display.flip()
-    def show_death_screen(self):
-        self.screen.fill(RED)
-        self.draw_text(self.screen, "Wasted!", 42, WHITE, WIDTH/2, HEIGHT/2)
-        pg.display.flip()
-        self.wait_for_key()
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -150,6 +117,5 @@ if __name__ == "__main__":
     g.new()
     # run the game...
     g.run()
-    g.show_death_screen()
 
         

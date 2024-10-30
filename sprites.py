@@ -148,3 +148,5 @@ class Coin(Sprite):
         self.image.fill(YELLOW)
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+

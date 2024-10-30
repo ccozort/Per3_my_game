@@ -13,21 +13,14 @@ class Player(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = self.game.player_img
-        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        # self.image.fill(RED)
-        # self.rect.x = x
-        # self.rect.y = y
-        # self.x = x * TILESIZE
-        # self.y = y * TILESIZE
+        self.image.fill(RED)
         self.pos = vec(x*TILESIZE, y*TILESIZE)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.speed = 5
         self.jumping = False
         self.jump_power = 15
-        # self.vx, self.vy = 0, 0
         self.coins = 0
         self.health = 10
     def get_keys(self):
@@ -36,8 +29,6 @@ class Player(Sprite):
             self.vel.y -= self.speed
         if keys[pg.K_a]:
             self.vel.x -= self.speed
-        # if keys[pg.K_s]:
-        #     self.vy += self.speed
         if keys[pg.K_d]:
             self.vel.x += self.speed
         if keys[pg.K_SPACE]:
@@ -76,42 +67,22 @@ class Player(Sprite):
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            if str(hits[0].__class__.__name__) == "Powerup":
-                print("i hit a powerup...")
-                hits[0].image = pg.transform.scale(hits[0].image, (200, 200))
-                self.health -= 1
             if str(hits[0].__class__.__name__) == "Mob":
                 print("i hit a mob...")
-                old_center = hits[0].rect.center
-                hits[0].image = pg.transform.scale(hits[0].image, (64, 64))
-                hits[0].rect = hits[0].image.get_rect()
-                hits[0].rect.center = old_center
-            if str(hits[0].__class__.__name__) == "Coin":
-                print("i hit a coin...")
-                self.coins += 1
+
     def update(self):
         self.acc = vec(0, GRAVITY)
         self.get_keys()
         self.acc.x += self.vel.x * FRICTION
         self.vel += self.acc 
-
+        # when very low velocity is achieved - set it to zero to prevent jiggling
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
-
         self.pos += self.vel + 0.5 * self.acc
-
-        # self.x += self.vx * self.game.dt
-        # self.y += self.vy * self.game.dt
-        # reverse order to fix collision issues
-
         self.rect.x = self.pos.x
         self.collide_with_walls('x')
-        
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
-
-        self.collide_with_stuff(self.game.all_powerups, False)
-        self.collide_with_stuff(self.game.all_coins, True)
         self.collide_with_stuff(self.game.all_mobs, False)
 
 class Mob(Sprite):
@@ -127,29 +98,13 @@ class Mob(Sprite):
         self.speed = 10
         # self.category = random.choice([0,1])
     def update(self):
-
-        # # moving towards the side of the screen
         self.rect.x += self.speed
-        
+        # checks to see if mob hits any wall
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
         # when it hits the side of the screen, it will move down
         if hits:
-            # print("off the screen...")
             self.speed *= -1
-            # self.rect.y += 32
-        if self.rect.right > WIDTH or self.rect.left < 0:
-            # print("off the screen...")
-            self.speed *= -1
-            # self.rect.y += 32
-        # elif self.rect.colliderect(self.game.player):
-        #     self.speed *= -1
-        # elif self.rect.colliderect(self):
-        #     self.speed *= -1
 
-   
-        # # then it will move towards the other side of the screen
-        # # if it gets to the bottom, then it move to the top of the screen
-        # # (display logic in the terminal)
 
 class Wall(Sprite):
     def __init__(self, game, x, y):
