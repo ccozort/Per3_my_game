@@ -25,7 +25,7 @@ class Player(Sprite):
         self.health = 10
     def get_keys(self):
         keys = pg.key.get_pressed()
-        if keys[pg.K_w] and self.collide_with_stuff(self.game.all_ladders, False):
+        if keys[pg.K_w]:
             self.vel.y -= self.speed
         if keys[pg.K_a]:
             self.vel.x -= self.speed
@@ -119,59 +119,6 @@ class Wall(Sprite):
 
     def update(self):
         pass
-class Pillar(Sprite):
-    def __init__(self, game, x, y, w, h):
-        self.game = game
-        self.groups = game.all_sprites, game.all_pillars
-        Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.rect = self.image.get_rect()
-        self.image.fill(GREEN)
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-        self.rect.w = w * TILESIZE
-        self.rect.h = h * TILESIZE
 
 
-    def update(self):
-        pass
 
-class Powerup(Sprite):
-    def __init__(self, game, x, y):
-        self.game = game
-        self.groups = game.all_sprites, game.all_powerups
-        Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.rect = self.image.get_rect()
-        self.image.fill(PINK)
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-        self.width = self.rect.width
-    def update(self):
-        # self.rect = self.image.get_rect()
-        # self.rect.width = self.width
-        pass
-
-class Coin(Sprite):
-    def __init__(self, game, x, y):
-        self.game = game
-        self.groups = game.all_sprites, game.all_coins
-        Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.rect = self.image.get_rect()
-        self.image.fill(YELLOW)
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class Ladder(Sprite):
-    def __init__(self, game, x, y):
-        self.game = game
-        self.groups = game.all_sprites, game.all_ladders
-        Sprite.__init__(self, self.groups)
-        # self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = self.game.ladder_img
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        # self.image.fill(YELLOW)
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
