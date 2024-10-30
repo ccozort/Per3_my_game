@@ -78,8 +78,6 @@ class Game:
                 if event.type == pg.QUIT:
                     self.running = False
 
-    def pillargenerator(self):
-        Pillar(self, 1, 1)
     def update(self):
         self.all_sprites.update()
         if self.player.health <= 0:

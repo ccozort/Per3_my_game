@@ -103,8 +103,9 @@ class Mob(Sprite):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
         # when it hits the side of the screen, it will move down
         if hits:
+            # makes it negative if it is positive and positive if it is negative
             self.speed *= -1
-
+            self.rect.y += TILESIZE*2
 
 class Wall(Sprite):
     def __init__(self, game, x, y):
