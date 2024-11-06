@@ -4,6 +4,7 @@ import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
 import random
+from utils import *
 
 class Player(Sprite):
     def __init__(self, game, x, y):
@@ -17,9 +18,12 @@ class Player(Sprite):
         # self.rect.y = y
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 10
+        self.speed = 25
         self.vx, self.vy = 0, 0
         self.coins = 0
+        self.health = 100
+        self.dir = (0,0)
+        self.cd = Cooldown()
     def get_keys(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_w]:
@@ -30,6 +34,27 @@ class Player(Sprite):
             self.vy += self.speed
         if keys[pg.K_d]:
             self.vx += self.speed
+        if keys[pg.K_LSHIFT]:
+            self.get_dir()
+            print(self.dir)
+            self.dash()
+    def get_dir(self):
+        if abs(self.vx) > abs(self.vy):
+            if self.vx > 0:
+                self.dir = (1,0)
+            elif self.vx < 0:
+                self.dir = (-1,0)         
+        elif abs(self.vy) > abs(self.vx):
+            if self.vy > 0:
+                self.dir = (0,1)
+            elif self.vy < 0:
+                self.dir = (0,-1)            
+    def dash(self):
+        self.cd.event_time = floor(pg.time.get_ticks()/1000)
+        if self.cd.delta > .001:
+            print('dashing')
+            self.vx += self.dir[0]*500
+            self.vy += self.dir[1]*500
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -61,6 +86,7 @@ class Player(Sprite):
                 print("i hit a coin...")
                 self.coins += 1
     def update(self):
+        self.cd.ticking()
         self.get_keys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt

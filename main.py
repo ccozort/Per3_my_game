@@ -3,8 +3,8 @@
 # IMPORT ALL NECESSARY MODULES AND LIBRARIES
 import pygame as pg
 from settings import *
-from sprites_sidescroller import *
-# from sprites import *
+# from sprites_sidescroller import *
+from sprites import *
 from tilemap import *
 from os import path
 import sys
@@ -18,6 +18,12 @@ FREEDOM: Move around inside the game space
 What sentence does your game make? 
 
 When the player collides with an enemy the enemy bounces off
+
+'''
+
+'''
+Sources:
+
 
 '''
 
@@ -42,7 +48,7 @@ class Game:
     def load_data(self):
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images' )
-        self.map = Map(path.join(self.game_folder, 'level1_sidescrolling.txt'))
+        self.map = Map(path.join(self.game_folder, 'level1.txt'))
         self.player_img = pg.image.load(path.join(self.img_folder, "bell.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
@@ -56,10 +62,11 @@ class Game:
         self.all_powerups = pg.sprite.Group()
         self.all_coins = pg.sprite.Group()
         self.all_ladders = pg.sprite.Group()
+        self.all_projectiles = pg.sprite.Group()
         # self.player = Player(self, 1, 1)
         # instantiated a mob
         # self.mob = Mob(self, 100,100)
-        # makes new mobs and walls using a for loop
+        # makes new mobs and walls using a for loop a
         # for i in range(randint(10,20)):
         #     m = Mob(self, i*randint(0, 200), i*randint(0, 200))
         #     Wall(self, i*TILESIZE, i*TILESIZE)
@@ -67,7 +74,7 @@ class Game:
 
         # takes map.data and parses it using enumerate so that we can assign x and y values to 
         # object instances.
-        p = Pillar(self, 1, 5, 1, 4)
+        # p = Pillar(self, 1, 5, 1, 4)
         for row, tiles in enumerate(self.map.data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -80,8 +87,8 @@ class Game:
                     Powerup(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
-                if tile == 'L':
-                    Ladder(self, col, row)
+                # if tile == 'L':
+                #     Ladder(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
     
@@ -105,8 +112,8 @@ class Game:
 
         # pg.quit()
         # process
-    def pillargenerator(self):
-        Pillar(self, 1, 1)
+    # def pillargenerator(self):
+    #     Pillar(self, 1, 1)
     def update(self):
         self.all_sprites.update()
         if self.player.health <= 0:

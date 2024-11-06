@@ -4,6 +4,7 @@ import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
 import random
+from utils import *
 
 vec = pg.math.Vector2
 
@@ -16,32 +17,35 @@ class Player(Sprite):
         self.image = self.game.player_img
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        # self.image.fill(RED)
-        # self.rect.x = x
-        # self.rect.y = y
-        # self.x = x * TILESIZE
-        # self.y = y * TILESIZE
         self.pos = vec(x*TILESIZE, y*TILESIZE)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.speed = 5
         self.jumping = False
         self.jump_power = 15
-        # self.vx, self.vy = 0, 0
         self.coins = 0
         self.health = 10
+        self.cd = Cooldown()
     def get_keys(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_w] and self.collide_with_stuff(self.game.all_ladders, False):
             self.vel.y -= self.speed
         if keys[pg.K_a]:
             self.vel.x -= self.speed
-        # if keys[pg.K_s]:
-        #     self.vy += self.speed
         if keys[pg.K_d]:
             self.vel.x += self.speed
         if keys[pg.K_SPACE]:
             self.jump()
+        if pg.mouse.get_pressed()[0]:
+            print(pg.mouse.get_pos())
+            self.shoot()
+
+    def shoot(self):
+        self.cd.event_time = floor(pg.time.get_ticks()/1000)
+        if self.cd.delta > .001:
+            p = Projectile(self.game, self.rect.x, self.rect.y)
+
+    
     def jump(self):
         self.rect.y += 2
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -90,6 +94,7 @@ class Player(Sprite):
                 print("i hit a coin...")
                 self.coins += 1
     def update(self):
+        self.cd.ticking()
         self.acc = vec(0, GRAVITY)
         self.get_keys()
         self.acc.x += self.vel.x * FRICTION
@@ -113,6 +118,21 @@ class Player(Sprite):
         self.collide_with_stuff(self.game.all_powerups, False)
         self.collide_with_stuff(self.game.all_coins, True)
         self.collide_with_stuff(self.game.all_mobs, False)
+
+class Projectile(Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self.groups = game.all_sprites, game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.rect = self.image.get_rect()
+        self.image.fill(RED)
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = 10
+
+    def update(self):
+        self.rect.y -= self.speed
 
 class Mob(Sprite):
     def __init__(self, game, x, y):
