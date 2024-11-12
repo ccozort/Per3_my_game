@@ -6,6 +6,8 @@ from settings import *
 import random
 from utils import *
 
+# test comment for GIT
+
 vec = pg.math.Vector2
 
 class Player(Sprite):
@@ -20,12 +22,14 @@ class Player(Sprite):
         self.pos = vec(x*TILESIZE, y*TILESIZE)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
-        self.speed = 5
+        self.speed = 2
         self.jumping = False
         self.jump_power = 15
         self.coins = 0
         self.health = 10
-        self.cd = Cooldown()
+        self.projectile_cd = Cooldown()
+        self.powerup_cd = Cooldown()
+        self.can_collect_powerup = True
     def get_keys(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_w] and self.collide_with_stuff(self.game.all_ladders, False):
@@ -41,8 +45,8 @@ class Player(Sprite):
             self.shoot()
 
     def shoot(self):
-        self.cd.event_time = floor(pg.time.get_ticks()/1000)
-        if self.cd.delta > .001:
+        self.projectile_cd.event_time = floor(pg.time.get_ticks()/1000)
+        if self.projectile_cd.delta > .001:
             p = Projectile(self.game, self.rect.x, self.rect.y)
 
     
@@ -80,10 +84,14 @@ class Player(Sprite):
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            if str(hits[0].__class__.__name__) == "Powerup":
-                print("i hit a powerup...")
-                hits[0].image = pg.transform.scale(hits[0].image, (200, 200))
-                self.health -= 1
+            if str(hits[0].__class__.__name__) == "Powerup" and self.can_collect_powerup:
+                print("i got a powerup...")
+                self.can_collect_powerup = False
+                self.powerup_cd.event_time = floor(pg.time.get_ticks()/1000)
+                
+                    
+                    # hits[0].image = pg.transform.scale(hits[0].image, (200, 200))
+
             if str(hits[0].__class__.__name__) == "Mob":
                 print("i hit a mob...")
                 old_center = hits[0].rect.center
@@ -94,7 +102,14 @@ class Player(Sprite):
                 print("i hit a coin...")
                 self.coins += 1
     def update(self):
-        self.cd.ticking()
+        self.projectile_cd.ticking()
+        self.powerup_cd.ticking()
+        if self.powerup_cd.delta > 1:
+            print("i can get a powerup again")
+            self.can_collect_powerup = True
+        if self.can_collect_powerup:
+            self.collide_with_stuff(self.game.all_powerups, True)
+            
         self.acc = vec(0, GRAVITY)
         self.get_keys()
         self.acc.x += self.vel.x * FRICTION
@@ -115,7 +130,7 @@ class Player(Sprite):
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
 
-        self.collide_with_stuff(self.game.all_powerups, False)
+        
         self.collide_with_stuff(self.game.all_coins, True)
         self.collide_with_stuff(self.game.all_mobs, False)
 

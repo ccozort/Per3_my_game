@@ -3,8 +3,8 @@
 # IMPORT ALL NECESSARY MODULES AND LIBRARIES
 import pygame as pg
 from settings import *
-# from sprites_sidescroller import *
-from sprites import *
+from sprites_sidescroller import *
+# from sprites import *
 from tilemap import *
 from os import path
 import sys
