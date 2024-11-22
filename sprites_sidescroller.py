@@ -55,6 +55,7 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
         self.rect.y -= 2
         if hits and not self.jumping:
+            self.game.jump_snd.play()
             self.jumping = True
             self.vel.y = -self.jump_power
             print("trying to jump")

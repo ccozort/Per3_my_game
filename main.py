@@ -28,7 +28,6 @@ Sources:
 '''
 
 
-
 # created a game class to instantiate later
 # it will have all the necessary parts to run the game
 # the game class is created to organize the elements needed to create a gam
@@ -48,10 +47,18 @@ class Game:
     def load_data(self):
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images' )
+        self.snd_folder = path.join(self.game_folder, 'sounds' )
         self.map = Map(path.join(self.game_folder, 'level1.txt'))
         self.player_img = pg.image.load(path.join(self.img_folder, "bell.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
+
+        # load sounds
+        self.jump_snd = pg.mixer.Sound(path.join(self.snd_folder, 'jump_07.wav'))
+        pg.mixer.music.load(path.join(self.snd_folder, 'background_music.mp3'))
+        pg.mixer.music.set_volume(0.4)
+        pg.mixer.music.play(loops=-1)
+
     def new(self):
         self.load_data()
         print(self.map.data)
