@@ -41,7 +41,7 @@ class Player(Sprite):
         if keys[pg.K_SPACE]:
             self.jump()
         if pg.mouse.get_pressed()[0]:
-            print(pg.mouse.get_pos())
+            # print(pg.mouse.get_pos())
             self.shoot()
 
     def shoot(self):
@@ -58,7 +58,7 @@ class Player(Sprite):
             self.game.jump_snd.play()
             self.jumping = True
             self.vel.y = -self.jump_power
-            print("trying to jump")
+            # print("trying to jump")
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -86,7 +86,7 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Powerup" and self.can_collect_powerup:
-                print("i got a powerup...")
+                # print("i got a powerup...")
                 self.can_collect_powerup = False
                 self.powerup_cd.event_time = floor(pg.time.get_ticks()/1000)
                 
@@ -94,19 +94,19 @@ class Player(Sprite):
                     # hits[0].image = pg.transform.scale(hits[0].image, (200, 200))
 
             if str(hits[0].__class__.__name__) == "Mob":
-                print("i hit a mob...")
+                # print("i hit a mob...")
                 old_center = hits[0].rect.center
                 hits[0].image = pg.transform.scale(hits[0].image, (64, 64))
                 hits[0].rect = hits[0].image.get_rect()
                 hits[0].rect.center = old_center
             if str(hits[0].__class__.__name__) == "Coin":
-                print("i hit a coin...")
-                self.coins += 1
+                # print("i hit a coin...")
+                self.game.score += 1
     def update(self):
         self.projectile_cd.ticking()
         self.powerup_cd.ticking()
         if self.powerup_cd.delta > 1:
-            print("i can get a powerup again")
+            # print("i can get a powerup again")
             self.can_collect_powerup = True
         if self.can_collect_powerup:
             self.collide_with_stuff(self.game.all_powerups, True)

@@ -42,13 +42,28 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.create_pillars = True
+        self.score = 0
     # create player block, creates the all_sprites group so that we can batch update and render, defines properties that can be seen in the game system
     #
     def load_data(self):
         self.game_folder = path.dirname(__file__)
+        # with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+        #     f.write(str(0))
+        try:
+            with open(path.join(self.game_folder, HS_FILE), 'r') as f:
+                self.highscore = int(f.read())
+        except:
+            self.highscore = 0
+            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                f.write(str(self.highscore))
+
+        
+
         self.img_folder = path.join(self.game_folder, 'images' )
         self.snd_folder = path.join(self.game_folder, 'sounds' )
+        # load map
         self.map = Map(path.join(self.game_folder, 'level1.txt'))
+        # load images
         self.player_img = pg.image.load(path.join(self.img_folder, "bell.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
         self.ladder_img = pg.image.load(path.join(self.img_folder, "ladder.png"))
@@ -61,7 +76,7 @@ class Game:
 
     def new(self):
         self.load_data()
-        print(self.map.data)
+        # print(self.map.data)
         self.all_sprites = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
         self.all_pillars = pg.sprite.Group()
@@ -83,9 +98,9 @@ class Game:
         # object instances.
         # p = Pillar(self, 1, 5, 1, 4)
         for row, tiles in enumerate(self.map.data):
-            print(row)
+            # print(row)
             for col, tile in enumerate(tiles):
-                print(col)
+                # print(col)
                 if tile == '1':
                     Wall(self, col, row)
                 if tile == 'M':
@@ -115,7 +130,11 @@ class Game:
     def events(self):
         for event in pg.event.get():
                 if event.type == pg.QUIT:
+                    if self.score > self.highscore:
+                        with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                            f.write(str(self.score))
                     self.running = False
+                    self.quit()
 
         # pg.quit()
         # process
@@ -137,7 +156,8 @@ class Game:
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
         self.draw_text(self.screen, str(pg.time.get_ticks()), 24, WHITE, WIDTH/30, HEIGHT/30)
-        self.draw_text(self.screen, "Coins collected: " + str(self.player.coins), 24, BLACK, WIDTH/2, HEIGHT/24)
+        self.draw_text(self.screen, "High Score: " + str(self.highscore), 24, BLACK, WIDTH/2, HEIGHT/12)
+        self.draw_text(self.screen, "Current Score: " + str(self.score), 24, BLACK, WIDTH/2, HEIGHT/24)
         pg.display.flip()
     def show_death_screen(self):
         self.screen.fill(RED)

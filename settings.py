@@ -17,3 +17,5 @@ PINK = (255, 155, 155)
 YELLOW = (255, 255, 0)
 
 COINS = 0
+
+HS_FILE = "highscore.txt"
