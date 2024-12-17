@@ -99,6 +99,8 @@ class Player(Sprite):
                 hits[0].image = pg.transform.scale(hits[0].image, (64, 64))
                 hits[0].rect = hits[0].image.get_rect()
                 hits[0].rect.center = old_center
+                self.game.player.health -= 10
+                print("i hit a mob")
             if str(hits[0].__class__.__name__) == "Coin":
                 # print("i hit a coin...")
                 self.game.score += 1

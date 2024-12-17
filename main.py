@@ -57,8 +57,6 @@ class Game:
             with open(path.join(self.game_folder, HS_FILE), 'w') as f:
                 f.write(str(self.highscore))
 
-        
-
         self.img_folder = path.join(self.game_folder, 'images' )
         self.snd_folder = path.join(self.game_folder, 'sounds' )
         # load map
@@ -116,12 +114,12 @@ class Game:
     
     # using self.running as a boolean to continue running the game
     def run(self):
-        self.running = True
-        while self.running:
+        self.playing = True
+        while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
-            self.draw()
+            self.draw() 
         # input
     def quit(self):
         pg.quit()
@@ -143,7 +141,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
         if self.player.health <= 0:
-            self.running = False
+            self.playing = False
 
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
@@ -159,11 +157,13 @@ class Game:
         self.draw_text(self.screen, "High Score: " + str(self.highscore), 24, BLACK, WIDTH/2, HEIGHT/12)
         self.draw_text(self.screen, "Current Score: " + str(self.score), 24, BLACK, WIDTH/2, HEIGHT/24)
         pg.display.flip()
+
     def show_death_screen(self):
         self.screen.fill(RED)
         self.draw_text(self.screen, "Wasted!", 42, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()
+
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -171,7 +171,7 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     waiting = False
-                    self.quit()
+                    self.running = False
                 if event.type == pg.KEYUP:
                     waiting = False
 
@@ -186,4 +186,4 @@ if __name__ == "__main__":
     g.run()
     g.show_death_screen()
 
-        
+pg.quit()

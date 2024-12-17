@@ -6,6 +6,72 @@ from settings import *
 import random
 from utils import *
 
+
+# Modified from Chat GPT - create snake game and make snake a pygame sprite
+class Snake(pg.sprite.Sprite):
+    def __init__(self, game):
+        super().__init__()
+        self.game = game
+        self.segments = [[WIDTH // 2, HEIGHT // 2]]
+        self.direction = (0, 0)
+        self.grow = False
+    def get_keys(self):
+        keys = pg.key.get_pressed()
+        if keys[pg.K_w]:
+            self.direction = (-TILESIZE, 0)
+        elif keys[pg.K_a]:
+            self.direction = (TILESIZE, 0)
+        elif keys[pg.K_s]:
+            self.direction = (0, -TILESIZE)
+        elif keys[pg.K_d]:
+            self.direction = (0, TILESIZE)
+
+
+    def draw(self):
+        for segment in self.segments:
+            pg.draw.rect(self.game.screen, BLACK, [segment[0], segment[1], TILESIZE, TILESIZE])
+
+    def check_collision(self):
+        head = self.segments[0]
+        # Check boundaries
+        if head[0] < 0 or head[0] >= WIDTH or head[1] < 0 or head[1] >= HEIGHT:
+            return True
+        # Check self-collision
+        if head in self.segments[1:]:
+            return True
+        return False
+
+    def grow_snake(self):
+        self.grow = True
+
+    def update(self):
+        self.get_keys()
+        if self.direction != (0, 0):
+            head_x, head_y = self.segments[0]
+            delta_x, delta_y = self.direction
+            new_head = [head_x + delta_x, head_y + delta_y]
+            self.segments.insert(0, new_head)
+            if not self.grow:
+                self.segments.pop()
+            self.grow = False
+        self.draw()
+
+
+# Modified from Chat GPT - create snake game and make snake a pygame sprite
+
+class Food(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.x = round(random.randrange(0, WIDTH - TILESIZE) / 10.0) * 10.0
+        self.y = round(random.randrange(0, HEIGHT - TILESIZE) / 10.0) * 10.0
+
+    def draw(self):
+        pg.draw.rect(self.game.screen, GREEN, [self.x, self.y, TILESIZE, TILESIZE])
+
+    def relocate(self):
+        self.x = round(random.randrange(0, WIDTH - TILESIZE) / 10.0) * 10.0
+        self.y = round(random.randrange(0, HEIGHT - TILESIZE) / 10.0) * 10.0
+
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.game = game
